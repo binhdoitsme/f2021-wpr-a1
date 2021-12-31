@@ -9,6 +9,9 @@ import { QuizReview } from './pages/QuizReview';
 type AnswerStore = { [_: string]: number | undefined };
 type NullableAnswerStore = AnswerStore | undefined;
 type NullableQuestions = Question[] | undefined;
+type NullableNumber = number | undefined;
+type NullableString = string | undefined;
+type NullableStringOrNumber = NullableString | NullableNumber;
 
 const endpoints = {
   newAttempt: {
@@ -27,14 +30,24 @@ function App() {
   const [attemptId, setAttemptId] = useState("");
   const [remark, setRemark] = useState("")
 
+  const groupByQuestion = (
+    accumulate: AnswerStore,
+    [questionId, selected]: NullableStringOrNumber[]
+  ) => {
+    accumulate[questionId!] = selected as NullableNumber;
+    return accumulate;
+  };
+
+  const onlyIdAndSelected = (q: Question) => [q.id, q.selectedAnswer];
+
   useEffect(() => {
-    const _answers = questions?.map((q) => [q.id, q.selectedAnswer])
-      .reduce(
-        (accumulate, [qId, selected]) =>
-          (accumulate[qId!] = selected as number | undefined, accumulate),
-        {} as AnswerStore
-      );
-    setAnswers(_answers);
+    if (!questions) {
+      return;
+    }
+    const emptyAnswerStore = {} as AnswerStore;
+    setAnswers(
+      questions.map(onlyIdAndSelected).reduce(groupByQuestion, emptyAnswerStore)
+    );
   }, [questions]);
 
   const toAttemptQuestions = (data: any) => {
@@ -59,7 +72,7 @@ function App() {
     setRemark(data.scoreText);
     return data;
   };
-  
+
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const newAttempt = () => {
