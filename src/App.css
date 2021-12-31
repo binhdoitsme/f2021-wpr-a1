@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  width: 700px;
 }
 
 .App-logo {
@@ -35,4 +35,29 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.btn {
+  color: white;
+  border: none;
+  height: 2.5rem;
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+  font-family: inherit;
+}
+
+.btn.green {
+  background-color: #4CAF50;
+}
+
+.btn.green:hover {
+  background-color: #46a049;
+}
+
+.btn.blue {
+  background-color: #2196F3;
+}
+
+.btn.blue:hover {
+  background-color: #0d8bf2;
 }
