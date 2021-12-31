@@ -101,21 +101,30 @@ function App() {
 
   const noCorrectAnswer = (q: Question) => !q.correctAnswer;
   const isInAttempt = () => questions !== undefined;
-
-  return (
-    <div className="App">
-      <Header />
-      {!isInAttempt() && <Home onStart={newAttempt} />}
-      {!isInAttempt() ? "" : questions?.every(noCorrectAnswer) ?
-        <QuizAttempt questions={questions}
+  const currentScreen = () => {
+    if (!isInAttempt()) {
+      return <Home onStart={newAttempt} />;
+    } else if (questions!.every(noCorrectAnswer)) {
+      return (
+        <QuizAttempt questions={questions!}
           answers={answers!}
           handleSubmit={submitAttempt}
-          onAnswerChanged={onAnswerChanged} /> :
+          onAnswerChanged={onAnswerChanged} />
+      );
+    } else {
+      return (
         <QuizReview questions={questions!}
           answers={answers!} remark={remark}
           handleRetry={reset}
           onAnswerChanged={onAnswerChanged} />
-      }
+      );
+    }
+  }
+
+  return (
+    <div className="App">
+      <Header />
+      {currentScreen()}
     </div>
   );
 }
